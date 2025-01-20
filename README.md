@@ -329,21 +329,17 @@ async function main() {
       tools: [
         {
           type: 'function',
-          function: {
-            function: getCurrentLocation,
-            parameters: { type: 'object', properties: {} },
-          },
+          function: getCurrentLocation,
+          parameters: { type: 'object', properties: {} },
         },
         {
           type: 'function',
-          function: {
-            function: getWeather,
-            parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
-            parameters: {
-              type: 'object',
-              properties: {
-                location: { type: 'string' },
-              },
+          function: getWeather,
+          parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
+          parameters: {
+            type: 'object',
+            properties: {
+              location: { type: 'string' },
             },
           },
         },
@@ -764,3 +760,32 @@ If you are interested in other runtime environments, please open or upvote an is
 ## Contributing
 
 See [the contributing documentation](./CONTRIBUTING.md).
+
+## Using Pyodide to Wrap openai-node as a Python Module
+
+This section explains how to use the Pyodide-wrapped `openai-node` in Python.
+
+### Prerequisites
+
+Ensure you have Pyodide installed. You can find installation instructions on the [Pyodide website](https://pyodide.org/en/stable/usage/quickstart.html).
+
+### Example Code
+
+Here is an example of how to initialize and use the Pyodide-wrapped `openai-node` in Python:
+
+```python
+import pyodide
+from pyodide_wrapper import initialize_pyodide, call_openai_method
+
+async def main():
+    await initialize_pyodide()
+    response = call_openai_method('chat.completions.create', {
+        'model': 'gpt-4o',
+        'messages': [{'role': 'user', 'content': 'Say this is a test'}]
+    })
+    print(response)
+
+pyodide.runPythonAsync(main())
+```
+
+In this example, we first import the necessary modules and functions. We then define an asynchronous `main` function that initializes Pyodide and calls the `chat.completions.create` method from the `openai-node` module. Finally, we run the `main` function using `pyodide.runPythonAsync`.
