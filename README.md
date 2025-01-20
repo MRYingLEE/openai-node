@@ -764,3 +764,39 @@ If you are interested in other runtime environments, please open or upvote an is
 ## Contributing
 
 See [the contributing documentation](./CONTRIBUTING.md).
+
+## Using the Python Module with Pyodide
+
+To use the wrapped `openai-node` module as a Python module with Pyodide, follow these steps:
+
+1. Initialize Pyodide and load the `openai-node` module:
+
+```python
+import pyodide
+import js
+
+async def initialize_pyodide():
+    await pyodide.loadPackage('openai-node')
+    js.openai = js.require('openai')
+
+await initialize_pyodide()
+```
+
+2. Create an OpenAI client and use it to make API calls:
+
+```python
+def create_openai_client(api_key):
+    return js.openai(api_key)
+
+async def create_completion(client, prompt):
+    completion = await client.completions.create({
+        'model': 'text-davinci-003',
+        'prompt': prompt,
+        'max_tokens': 100
+    })
+    return completion.choices[0].text
+
+client = create_openai_client('your-api-key')
+result = await create_completion(client, 'Say this is a test')
+print(result)
+```
